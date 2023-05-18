@@ -7,6 +7,7 @@ import {
     push,
     onValue,
     remove,
+    update
 } from "firebase/database";
 import { useEffect, useRef, useState } from "react";
 import Modal from "react-modal";
@@ -28,8 +29,10 @@ function App() {
     let hello;
     const [modalIsOpen, setIsOpen] = useState(false);
 
-    function openModal() {
+    function openModal(item) {
         setIsOpen(true);
+        seteditid(item.id);
+        console.log(item.total);
     }
 
     function afterOpenModal() {
@@ -49,12 +52,16 @@ function App() {
     let [Multiplication, setMultiplication] = useState();
     let [total, settotal] = useState(0);
     let [list, setlist] = useState([]);
+    let [editid, seteditid] = useState("")
+    let [updatetext, setupdate] = useState()
+
 
     // creaate uesref
     let addref = useRef();
     let Divisionref = useRef();
     let Minusref = useRef();
     let Multiplicationref = useRef();
+    let upref = useRef()
 
     useEffect(() => {
        // list
@@ -78,6 +85,19 @@ function App() {
     let handledel = (id) => {
         remove(ref(db, "input/" + id));
     };
+
+    // update button 
+    let handleupdate = ()=>{
+        console.log(updatetext);
+        update(ref(db, 'input/'+editid),{
+            preposition: "with",
+            text: "Adding",
+            prev: total,
+            input: add  ,
+            total: total + + add ,
+          })
+      
+    }
    
     let handlebutton = () => {
         // data if funcion
@@ -239,7 +259,7 @@ function App() {
                                 </button>
                                 <button
                                     className="border border-white text-red-500 px-4 text-base"
-                                    onClick={openModal}
+                                    onClick={()=> openModal(item)}
                                 >
                                     Edit
                                 </button>
@@ -275,46 +295,20 @@ function App() {
                                 <div>
                                     <div className="mb-5">
                                         <input
-                                            ref={addref}
+                                            ref={upref}
                                             onChange={(e) =>
-                                                setadd(e.target.value)
+                                                setupdate(e.target.value)
                                             }
                                             className="border border-black mx-2"
                                             placeholder="Add  +"
                                         />
-                                        <input
-                                            ref={Divisionref}
-                                            onChange={(e) =>
-                                                setDivision(e.target.value)
-                                            }
-                                            className="border border-black mx-2"
-                                            placeholder="Division  /"
-                                        />
+                                      
                                     </div>
-                                    <div>
-                                        <input
-                                            ref={Minusref}
-                                            onChange={(e) =>
-                                                setMinus(e.target.value)
-                                            }
-                                            className="border border-black mx-2"
-                                            placeholder="Minus  -"
-                                        />
-                                        <input
-                                            ref={Multiplicationref}
-                                            onChange={(e) =>
-                                                setMultiplication(
-                                                    e.target.value
-                                                )
-                                            }
-                                            className="border border-black mx-2"
-                                            placeholder="Multiplication  *"
-                                        />
-                                    </div>
+                                   
                                 </div>
                                 <div>
                                     <button
-                                        onClick={handlebutton}
+                                        onClick={handleupdate}
                                         className="w-full bg-[#22D3EE] mt-4 py-4 rounded-full"
                                     >
                                         Update
