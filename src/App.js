@@ -57,28 +57,26 @@ function App() {
     let Multiplicationref = useRef();
 
     useEffect(() => {
-        const starCountRef = ref(db, "input-counter/");
-        onValue(starCountRef, (snapshot) => {
-            snapshot.forEach((item) => {
-                console.log(item.key, "=", item.val());
-                settotal(item.val());
-            });
-        });
-
-        // list
-        const listref = ref(db, "List/");
-        onValue(listref, (snapshot) => {
-            let arr = [];
-            snapshot.forEach((item) => {
-                arr.push({ ...item.val(), id: item.key });
-            });
-            setlist(arr);
-        });
+       // list
+       const listref = ref(db, 'input/');
+       onValue(listref, (snapshot) => {
+         let arr = []
+         snapshot.forEach((item)=>{
+           arr.push({...item.val(),id:item.key});
+         })
+         setlist(arr)
+       });
     }, []);
+
+    useEffect(()=>{
+        list.map((item)=>(
+          settotal(item.total)
+          ))
+      },)
 
     // del button
     let handledel = (id) => {
-        remove(ref(db, "List/" + id));
+        remove(ref(db, "input/" + id));
     };
    
     let handlebutton = () => {
@@ -96,15 +94,13 @@ function App() {
             !Minusref.current.value &&
             !Multiplicationref.current.value
         ) {
-            let alldata = data + +add;
-            settotal(alldata);
-            seterr("");
-            set(ref(db, "input-counter/"), {
-                task: alldata,
-            });
-            set(push(ref(db, "List/")), {
-                list: `${data} + ${add} = ${alldata}`,
-            });
+            set(push(ref(db, 'input/')), {
+                preposition: "with",
+                text: "Adding",
+                prev: total,
+                input: add  ,
+                total: total + + add ,
+              });
             addref.current.value = "";
         } else if (
             !addref.current.value &&
@@ -114,14 +110,15 @@ function App() {
             if (Divisionref.current.value > data) {
                 seterr("Please add input your number");
             } else {
-                let alldata = data / Division;
-                settotal(alldata);
-                set(ref(db, "input-counter/"), {
-                    task: alldata,
-                });
-                set(push(ref(db, "List/")), {
-                    list: `${data} / ${Division} = ${alldata}`,
-                });
+                set(push(ref(db, 'input/')), {
+                    preposition: "by",
+                    text: "Dividing",
+                    prev: total,
+                    input: Division  ,
+                    total: total / Division ,
+                  });
+                
+                  seterr("")
                 seterr("");
                 Divisionref.current.value = "";
             }
@@ -130,14 +127,13 @@ function App() {
             !Divisionref.current.value &&
             !Multiplicationref.current.value
         ) {
-            let alldata = data - Minus;
-            settotal(alldata);
-            set(ref(db, "input-counter/"), {
-                task: alldata,
-            });
-            set(push(ref(db, "List/")), {
-                list: `${data} - ${Minus} = ${alldata}`,
-            });
+            set(push(ref(db, 'input/')), {
+                preposition: "from",
+                text: "Subtracting",
+                prev: total,
+                input: Minus  ,
+                total: total - Minus ,
+              });
             seterr("");
             Minusref.current.value = "";
         } else if (
@@ -145,17 +141,17 @@ function App() {
             !Divisionref.current.value &&
             !Minusref.current.value
         ) {
-            if (Multiplicationref.current.value > data) {
+            if (Multiplicationref.current.value > Multiplication) {
                 seterr("Please add input your number");
             } else {
-                let alldata = data * Multiplication;
-                settotal(alldata);
-                set(ref(db, "input-counter/"), {
-                    task: alldata,
-                });
-                set(push(ref(db, "List/")), {
-                    list: `${data} * ${Multiplication} = ${alldata}`,
-                });
+                set(push(ref(db, 'input/')), {
+                    preposition: "with",
+                    text: "Multiplying",
+                    prev: total,
+                    input: Multiplication  ,
+                    total: total * Multiplication ,
+                  });
+                
                 Multiplicationref.current.value = "";
             }
         } else {
@@ -224,24 +220,32 @@ function App() {
                     </h2>
                     <ol className="list-decimal">
                         {list.map((item, index) => (
-                            <li
+                            <div className="flex justify-between">
+                                <div className="w-[60%]">
+                                <li
                                 key={index}
-                                className="text-white font-medium text-xl"
+                                className="text-white font-medium text-base"
                             >
-                                {item.list}{" "}
+                                {item.text} {item.prev} {item.preposition} {item.input}. Total is = {item.total}{"  "}
+                               
+                            </li>
+                                </div>
+                                <div className="w-[40%]"> 
                                 <button
-                                    className="border border-white text-red-500 px-4 text-base"
+                                    className="border border-white text-red-500 px-4 text-base inline-block"
                                     onClick={(id) => handledel(item.id)}
                                 >
-                                    Delet
-                                </button>{" "}
+                                    Delete
+                                </button>
                                 <button
                                     className="border border-white text-red-500 px-4 text-base"
                                     onClick={openModal}
                                 >
                                     Edit
                                 </button>
-                            </li>
+                                </div>
+                            </div>
+                           
                         ))}
                     </ol>
 
