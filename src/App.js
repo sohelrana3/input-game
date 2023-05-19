@@ -368,7 +368,7 @@ function App() {
                                     <div className="mb-5">
                                         <p className="mb-4">
                                             <span className="text-xl font-semibold">
-                                                Editby :
+                                                Current log :
                                             </span>{" "}
                                             {edittext} {editprev}{" "}
                                             {editpreposition} {editinput}. Total
