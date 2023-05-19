@@ -32,7 +32,6 @@ function App() {
     function openModal(item) {
         setIsOpen(true);
         seteditid(item.id);
-        console.log(item.total);
     }
 
     function afterOpenModal() {
@@ -79,6 +78,10 @@ function App() {
           ))
       },)
 
+      useEffect(()=>{
+        console.log("ii");
+      },)
+
     // del button
     let handledel = (id) => {
         remove(ref(db, "input/" + id));
@@ -86,14 +89,6 @@ function App() {
 
     // update button 
     let handleupdate = ()=>{
-        // console.log(updatetext);
-        // update(ref(db, 'input/'+editid),{
-        //     preposition: "with",
-        //     text: "Adding",
-        //     prev: total,
-        //     input: add  ,
-        //     total: total + + add ,
-        //   })
         if (
             !addref.current.value &&
             !Divisionref.current.value &&
@@ -113,6 +108,7 @@ function App() {
                 input: add  ,
                 total: total + + add ,
               });
+              seterr("");
             addref.current.value = "";
         } else if (
             !addref.current.value &&
@@ -130,7 +126,6 @@ function App() {
                     total: total / Division ,
                   });
                 
-                  seterr("")
                 seterr("");
                 Divisionref.current.value = "";
             }
