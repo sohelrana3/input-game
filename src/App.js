@@ -354,7 +354,6 @@ function App() {
                                 <h2 ref={(_subtitle) => (hello = _subtitle)}>
                                     Hello Shawon sir
                                 </h2>
-                                <h2>hello</h2>
                                 <button
                                     className="absolute top-0 right-0 border border-red-500 px-4"
                                     onClick={closeModal}
