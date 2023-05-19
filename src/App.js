@@ -53,15 +53,13 @@ function App() {
     let [total, settotal] = useState(0);
     let [list, setlist] = useState([]);
     let [editid, seteditid] = useState("")
-    let [updatetext, setupdate] = useState()
 
 
     // creaate uesref
     let addref = useRef();
     let Divisionref = useRef();
     let Minusref = useRef();
-    let Multiplicationref = useRef();
-    let upref = useRef()
+    let Multiplicationref = useRef()
 
     useEffect(() => {
        // list
@@ -88,20 +86,94 @@ function App() {
 
     // update button 
     let handleupdate = ()=>{
-        console.log(updatetext);
-        update(ref(db, 'input/'+editid),{
-            preposition: "with",
-            text: "Adding",
-            prev: total,
-            input: add  ,
-            total: total + + add ,
-          })
+        // console.log(updatetext);
+        // update(ref(db, 'input/'+editid),{
+        //     preposition: "with",
+        //     text: "Adding",
+        //     prev: total,
+        //     input: add  ,
+        //     total: total + + add ,
+        //   })
+        if (
+            !addref.current.value &&
+            !Divisionref.current.value &&
+            !Minusref.current.value &&
+            !Multiplicationref.current.value
+        ) {
+            seterr("Please give me input box your data");
+        } else if (
+            !Divisionref.current.value &&
+            !Minusref.current.value &&
+            !Multiplicationref.current.value
+        ) {
+            update(ref(db, 'input/'+editid),{
+                preposition: "with",
+                text: "Adding",
+                prev: total,
+                input: add  ,
+                total: total + + add ,
+              });
+            addref.current.value = "";
+        } else if (
+            !addref.current.value &&
+            !Minusref.current.value &&
+            !Multiplicationref.current.value
+        ) {
+            if (Divisionref.current.value > total) {
+                seterr("Please add input your number");
+            } else {
+                update(ref(db, 'input/'+editid),{
+                    preposition: "by",
+                    text: "Dividing",
+                    prev: total,
+                    input: Division  ,
+                    total: total / Division ,
+                  });
+                
+                  seterr("")
+                seterr("");
+                Divisionref.current.value = "";
+            }
+        } else if (
+            !addref.current.value &&
+            !Divisionref.current.value &&
+            !Multiplicationref.current.value
+        ) {
+            update(ref(db, 'input/'+editid),{
+                preposition: "from",
+                text: "Subtracting",
+                prev: total,
+                input: Minus  ,
+                total: total - Minus ,
+              });
+            seterr("");
+            Minusref.current.value = "";
+        } else if (
+            !addref.current.value &&
+            !Divisionref.current.value &&
+            !Minusref.current.value
+        ) {
+            if (Multiplicationref.current.value > total) {
+                seterr("Please add input your number");
+            } else {
+                update(ref(db, 'input/'+editid),{
+                    preposition: "with",
+                    text: "Multiplying",
+                    prev: total,
+                    input: Multiplication  ,
+                    total: total * Multiplication ,
+                  });
+                
+                Multiplicationref.current.value = "";
+            }
+        } else {
+            seterr("Please give me one Inputbox data");
+        }
+        setIsOpen(false);
       
     }
-   
+   // handlle button
     let handlebutton = () => {
-        // data if funcion
-        let data = total;
         if (
             !addref.current.value &&
             !Divisionref.current.value &&
@@ -127,7 +199,7 @@ function App() {
             !Minusref.current.value &&
             !Multiplicationref.current.value
         ) {
-            if (Divisionref.current.value > data) {
+            if (Divisionref.current.value > total) {
                 seterr("Please add input your number");
             } else {
                 set(push(ref(db, 'input/')), {
@@ -161,7 +233,7 @@ function App() {
             !Divisionref.current.value &&
             !Minusref.current.value
         ) {
-            if (Multiplicationref.current.value > Multiplication) {
+            if (Multiplicationref.current.value > total) {
                 seterr("Please add input your number");
             } else {
                 set(push(ref(db, 'input/')), {
@@ -295,12 +367,39 @@ function App() {
                                 <div>
                                     <div className="mb-5">
                                         <input
-                                            ref={upref}
+                                            ref={addref}
                                             onChange={(e) =>
-                                                setupdate(e.target.value)
+                                                setadd(e.target.value)
                                             }
                                             className="border border-black mx-2"
                                             placeholder="Add  +"
+                                        />
+                                        <input
+                                             ref={Divisionref}
+                                            onChange={(e) =>
+                                                setDivision(e.target.value)
+                                            }
+                                            className="border border-black mx-2"
+                                            placeholder="Division  /"
+                                        />
+                                      
+                                    </div>
+                                    <div className="mb-5">
+                                        <input
+                                               ref={Minusref}
+                                            onChange={(e) =>
+                                                setMinus(e.target.value)
+                                            }
+                                            className="border border-black mx-2"
+                                            placeholder="Minus  -"
+                                        />
+                                        <input
+                                            ref={Multiplicationref}
+                                            onChange={(e) =>
+                                                setMultiplication(e.target.value)
+                                            }
+                                            className="border border-black mx-2"
+                                            placeholder="Multiplication  *"
                                         />
                                       
                                     </div>
