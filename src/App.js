@@ -58,11 +58,11 @@ function App() {
     let [list, setlist] = useState([]);
     let [editid, seteditid] = useState("");
     let [upprev, setupprev] = useState(0);
-    let [editinput, seteditinput] = useState()
-    let [editpreposition, seteditpreposition] = useState()
-    let [editprev, seteditprev] = useState()
-    let [edittotal, setedittotal] = useState()
-    let [edittext, setedittext] = useState()
+    let [editinput, seteditinput] = useState();
+    let [editpreposition, seteditpreposition] = useState();
+    let [editprev, seteditprev] = useState();
+    let [edittotal, setedittotal] = useState();
+    let [edittext, setedittext] = useState();
 
     // creaate uesref
     let addref = useRef();
@@ -308,11 +308,10 @@ function App() {
                     <h2 className="text-center font-bold text-xl text-white mb-6">
                         List History
                     </h2>
-
-                    {list.map((item, index) => (
-                        <div className="flex justify-between">
-                            <div className="w-[60%]">
-                                <ol className="list-decimal">
+                    <ol className="list-decimal">
+                        {list.map((item, index) => (
+                            <div className="flex justify-between">
+                                <div className="w-[60%]">
                                     <li
                                         key={index}
                                         className="text-white font-medium text-base"
@@ -322,24 +321,24 @@ function App() {
                                         is = {item.total}
                                         {"  "}
                                     </li>
-                                </ol>
+                                </div>
+                                <div className="w-[40%]">
+                                    <button
+                                        className="border border-white text-red-500 px-4 text-base inline-block"
+                                        onClick={(id) => handledel(item.id)}
+                                    >
+                                        Delete
+                                    </button>
+                                    <button
+                                        className="border border-white text-red-500 px-4 text-base"
+                                        onClick={() => openModal(item)}
+                                    >
+                                        Edit
+                                    </button>
+                                </div>
                             </div>
-                            <div className="w-[40%]">
-                                <button
-                                    className="border border-white text-red-500 px-4 text-base inline-block"
-                                    onClick={(id) => handledel(item.id)}
-                                >
-                                    Delete
-                                </button>
-                                <button
-                                    className="border border-white text-red-500 px-4 text-base"
-                                    onClick={() => openModal(item)}
-                                >
-                                    Edit
-                                </button>
-                            </div>
-                        </div>
-                    ))}
+                        ))}
+                    </ol>
 
                     {/* modal */}
                     <div>
@@ -355,7 +354,7 @@ function App() {
                                 <h2 ref={(_subtitle) => (hello = _subtitle)}>
                                     Hello Shawon sir
                                 </h2>
-                                
+                                <h2>hello</h2>
                                 <button
                                     className="absolute top-0 right-0 border border-red-500 px-4"
                                     onClick={closeModal}
@@ -365,13 +364,18 @@ function App() {
                                 <h2 className="text-center mb-3 text-2xl font-bold">
                                     Total: {total}
                                 </h2>
-                                
+
                                 <div>
                                     <div className="mb-5">
-                                    <p className="mb-4"><span className="text-xl font-semibold">Editby :</span> {edittext} {editprev}{" "}
-                                        {editpreposition} {editinput}. Total
-                                        is = {edittotal}
-                                        {"  "}</p>
+                                        <p className="mb-4">
+                                            <span className="text-xl font-semibold">
+                                                Editby :
+                                            </span>{" "}
+                                            {edittext} {editprev}{" "}
+                                            {editpreposition} {editinput}. Total
+                                            is = {edittotal}
+                                            {"  "}
+                                        </p>
                                         <input
                                             ref={addref}
                                             onChange={(e) =>
