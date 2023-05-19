@@ -7,7 +7,7 @@ import {
     push,
     onValue,
     remove,
-    update
+    update,
 } from "firebase/database";
 import { useEffect, useRef, useState } from "react";
 import Modal from "react-modal";
@@ -32,6 +32,11 @@ function App() {
     function openModal(item) {
         setIsOpen(true);
         seteditid(item.id);
+        seteditinput(item.input);
+        seteditpreposition(item.preposition);
+        seteditprev(item.prev);
+        setedittotal(item.total);
+        setedittext(item.text);
     }
 
     function afterOpenModal() {
@@ -51,44 +56,43 @@ function App() {
     let [Multiplication, setMultiplication] = useState();
     let [total, settotal] = useState(0);
     let [list, setlist] = useState([]);
-    let [editid, seteditid] = useState("")
-    let [upprev, setupprev] = useState(0)
-
+    let [editid, seteditid] = useState("");
+    let [upprev, setupprev] = useState(0);
+    let [editinput, seteditinput] = useState()
+    let [editpreposition, seteditpreposition] = useState()
+    let [editprev, seteditprev] = useState()
+    let [edittotal, setedittotal] = useState()
+    let [edittext, setedittext] = useState()
 
     // creaate uesref
     let addref = useRef();
     let Divisionref = useRef();
     let Minusref = useRef();
-    let Multiplicationref = useRef()
+    let Multiplicationref = useRef();
 
     useEffect(() => {
-       // list
-       const listref = ref(db, 'input/');
-       onValue(listref, (snapshot) => {
-         let arr = []
-         snapshot.forEach((item)=>{
-           arr.push({...item.val(),id:item.key});
-         })
-         setlist(arr)
-       });
+        // list
+        const listref = ref(db, "input/");
+        onValue(listref, (snapshot) => {
+            let arr = [];
+            snapshot.forEach((item) => {
+                arr.push({ ...item.val(), id: item.key });
+            });
+            setlist(arr);
+        });
     }, []);
 
-    useEffect(()=>{
-        list.map((item)=>(
-          setupprev(item.prev),
-          settotal(item.total)
-          ))
-      },)
-
-   
+    useEffect(() => {
+        list.map((item) => (setupprev(item.prev), settotal(item.total)));
+    });
 
     // del button
     let handledel = (id) => {
         remove(ref(db, "input/" + id));
     };
 
-    // update button 
-    let handleupdate = ()=>{
+    // update button
+    let handleupdate = () => {
         if (
             !addref.current.value &&
             !Divisionref.current.value &&
@@ -101,14 +105,14 @@ function App() {
             !Minusref.current.value &&
             !Multiplicationref.current.value
         ) {
-            update(ref(db, 'input/'+editid),{
+            update(ref(db, "input/" + editid), {
                 preposition: "with",
                 text: "Adding",
                 prev: upprev,
-                input: add  ,
-                total: upprev + + add ,
-              });
-              seterr("");
+                input: add,
+                total: upprev + +add,
+            });
+            seterr("");
             addref.current.value = "";
         } else if (
             !addref.current.value &&
@@ -118,14 +122,14 @@ function App() {
             if (Divisionref.current.value > total) {
                 seterr("Please add input your number");
             } else {
-                update(ref(db, 'input/'+editid),{
+                update(ref(db, "input/" + editid), {
                     preposition: "by",
                     text: "Dividing",
                     prev: total,
-                    input: Division  ,
-                    total: total / Division ,
-                  });
-                
+                    input: Division,
+                    total: total / Division,
+                });
+
                 seterr("");
                 Divisionref.current.value = "";
             }
@@ -134,13 +138,13 @@ function App() {
             !Divisionref.current.value &&
             !Multiplicationref.current.value
         ) {
-            update(ref(db, 'input/'+editid),{
+            update(ref(db, "input/" + editid), {
                 preposition: "from",
                 text: "Subtracting",
                 prev: total,
-                input: Minus  ,
-                total: total - Minus ,
-              });
+                input: Minus,
+                total: total - Minus,
+            });
             seterr("");
             Minusref.current.value = "";
         } else if (
@@ -151,23 +155,22 @@ function App() {
             if (Multiplicationref.current.value > total) {
                 seterr("Please add input your number");
             } else {
-                update(ref(db, 'input/'+editid),{
+                update(ref(db, "input/" + editid), {
                     preposition: "with",
                     text: "Multiplying",
                     prev: total,
-                    input: Multiplication  ,
-                    total: total * Multiplication ,
-                  });
-                
+                    input: Multiplication,
+                    total: total * Multiplication,
+                });
+
                 Multiplicationref.current.value = "";
             }
         } else {
             seterr("Please give me one Inputbox data");
         }
         setIsOpen(false);
-      
-    }
-   // handlle button
+    };
+    // handlle button
     let handlebutton = () => {
         if (
             !addref.current.value &&
@@ -181,13 +184,13 @@ function App() {
             !Minusref.current.value &&
             !Multiplicationref.current.value
         ) {
-            set(push(ref(db, 'input/')), {
+            set(push(ref(db, "input/")), {
                 preposition: "with",
                 text: "Adding",
                 prev: total,
-                input: add  ,
-                total: total + + add ,
-              });
+                input: add,
+                total: total + +add,
+            });
             addref.current.value = "";
         } else if (
             !addref.current.value &&
@@ -197,15 +200,15 @@ function App() {
             if (Divisionref.current.value > total) {
                 seterr("Please add input your number");
             } else {
-                set(push(ref(db, 'input/')), {
+                set(push(ref(db, "input/")), {
                     preposition: "by",
                     text: "Dividing",
                     prev: total,
-                    input: Division  ,
-                    total: total / Division ,
-                  });
-                
-                  seterr("")
+                    input: Division,
+                    total: total / Division,
+                });
+
+                seterr("");
                 seterr("");
                 Divisionref.current.value = "";
             }
@@ -214,13 +217,13 @@ function App() {
             !Divisionref.current.value &&
             !Multiplicationref.current.value
         ) {
-            set(push(ref(db, 'input/')), {
+            set(push(ref(db, "input/")), {
                 preposition: "from",
                 text: "Subtracting",
                 prev: total,
-                input: Minus  ,
-                total: total - Minus ,
-              });
+                input: Minus,
+                total: total - Minus,
+            });
             seterr("");
             Minusref.current.value = "";
         } else if (
@@ -231,14 +234,14 @@ function App() {
             if (Multiplicationref.current.value > total) {
                 seterr("Please add input your number");
             } else {
-                set(push(ref(db, 'input/')), {
+                set(push(ref(db, "input/")), {
                     preposition: "with",
                     text: "Multiplying",
                     prev: total,
-                    input: Multiplication  ,
-                    total: total * Multiplication ,
-                  });
-                
+                    input: Multiplication,
+                    total: total * Multiplication,
+                });
+
                 Multiplicationref.current.value = "";
             }
         } else {
@@ -305,19 +308,23 @@ function App() {
                     <h2 className="text-center font-bold text-xl text-white mb-6">
                         List History
                     </h2>
-                    <ol className="list-decimal">
-                        {list.map((item, index) => (
-                            <div className="flex justify-between">
-                                <div className="w-[60%]">
-                                <li
-                                key={index}
-                                className="text-white font-medium text-base"
-                            >
-                                {item.text} {item.prev} {item.preposition} {item.input}. Total is = {item.total}{"  "}
-                               
-                            </li>
-                                </div>
-                                <div className="w-[40%]"> 
+
+                    {list.map((item, index) => (
+                        <div className="flex justify-between">
+                            <div className="w-[60%]">
+                                <ol className="list-decimal">
+                                    <li
+                                        key={index}
+                                        className="text-white font-medium text-base"
+                                    >
+                                        {item.text} {item.prev}{" "}
+                                        {item.preposition} {item.input}. Total
+                                        is = {item.total}
+                                        {"  "}
+                                    </li>
+                                </ol>
+                            </div>
+                            <div className="w-[40%]">
                                 <button
                                     className="border border-white text-red-500 px-4 text-base inline-block"
                                     onClick={(id) => handledel(item.id)}
@@ -326,15 +333,13 @@ function App() {
                                 </button>
                                 <button
                                     className="border border-white text-red-500 px-4 text-base"
-                                    onClick={()=> openModal(item)}
+                                    onClick={() => openModal(item)}
                                 >
                                     Edit
                                 </button>
-                                </div>
                             </div>
-                           
-                        ))}
-                    </ol>
+                        </div>
+                    ))}
 
                     {/* modal */}
                     <div>
@@ -350,6 +355,7 @@ function App() {
                                 <h2 ref={(_subtitle) => (hello = _subtitle)}>
                                     Hello Shawon sir
                                 </h2>
+                                
                                 <button
                                     className="absolute top-0 right-0 border border-red-500 px-4"
                                     onClick={closeModal}
@@ -359,8 +365,13 @@ function App() {
                                 <h2 className="text-center mb-3 text-2xl font-bold">
                                     Total: {total}
                                 </h2>
+                                
                                 <div>
                                     <div className="mb-5">
+                                    <p className="mb-4"><span className="text-xl font-semibold">Editby :</span> {edittext} {editprev}{" "}
+                                        {editpreposition} {editinput}. Total
+                                        is = {edittotal}
+                                        {"  "}</p>
                                         <input
                                             ref={addref}
                                             onChange={(e) =>
@@ -370,18 +381,17 @@ function App() {
                                             placeholder="Add  +"
                                         />
                                         <input
-                                             ref={Divisionref}
+                                            ref={Divisionref}
                                             onChange={(e) =>
                                                 setDivision(e.target.value)
                                             }
                                             className="border border-black mx-2"
                                             placeholder="Division  /"
                                         />
-                                      
                                     </div>
                                     <div className="mb-5">
                                         <input
-                                               ref={Minusref}
+                                            ref={Minusref}
                                             onChange={(e) =>
                                                 setMinus(e.target.value)
                                             }
@@ -391,14 +401,14 @@ function App() {
                                         <input
                                             ref={Multiplicationref}
                                             onChange={(e) =>
-                                                setMultiplication(e.target.value)
+                                                setMultiplication(
+                                                    e.target.value
+                                                )
                                             }
                                             className="border border-black mx-2"
                                             placeholder="Multiplication  *"
                                         />
-                                      
                                     </div>
-                                   
                                 </div>
                                 <div>
                                     <button
