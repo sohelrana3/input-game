@@ -52,6 +52,7 @@ function App() {
     let [total, settotal] = useState(0);
     let [list, setlist] = useState([]);
     let [editid, seteditid] = useState("")
+    let [upprev, setupprev] = useState(0)
 
 
     // creaate uesref
@@ -74,13 +75,12 @@ function App() {
 
     useEffect(()=>{
         list.map((item)=>(
+          setupprev(item.prev),
           settotal(item.total)
           ))
       },)
 
-      useEffect(()=>{
-        console.log("ii");
-      },)
+   
 
     // del button
     let handledel = (id) => {
@@ -104,9 +104,9 @@ function App() {
             update(ref(db, 'input/'+editid),{
                 preposition: "with",
                 text: "Adding",
-                prev: total,
+                prev: upprev,
                 input: add  ,
-                total: total + + add ,
+                total: upprev + + add ,
               });
               seterr("");
             addref.current.value = "";
